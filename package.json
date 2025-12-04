@@ -1,0 +1,16 @@
+{
+  "name": "ymir-aot",
+  "version": "1.0.0",
+  "description": "AOT-themed SPA with Vercel serverless API (Postgres/Neon)",
+  "scripts": {
+    "dev": "vercel dev",
+    "start": "vercel dev"
+  },
+  "dependencies": {
+    "pg": "^8.11.3"
+  },
+  "engines": {
+    "node": "18.x"
+  },
+  "license": "MIT"
+}
