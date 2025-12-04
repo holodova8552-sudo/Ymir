@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>WALL MARIA</title>
+  <meta name="description" content="inventory, shop, deck, leaderboard">
+  <style>
+    :root{--bg:#07101a;--panel:#0d1a24;--muted:#9fb0be;--survey:#6ea8a1;--survey-2:#a3d9c5;--marley:#c07b4b;--glass: rgba(255,255,255,0.03);--glass-2: rgba(255,255,255,0.02);}
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;font-family:Inter,ui-sans-serif,system-ui,Arial,sans-serif;background:linear-gradient(180deg,#05070a,var(--bg));color:#eaf6f3}
+    .app{max-width:1200px;margin:26px auto;padding:18px}
+    header{display:flex;align-items:center;gap:16px}
+    .logo{width:64px;height:64px;border-radius:10px;background:linear-gradient(135deg,var(--survey),var(--marley));display:flex;align-items:center;justify-content:center;font-weight:900;color:#061017}
+    header h1{font-size:20px}header p{color:var(--muted);font-size:13px}
+    .main-grid{display:grid;grid-template-columns:260px 1fr;gap:18px;margin-top:18px}
+    .sidebar{background:linear-gradient(180deg,var(--panel),#071223);padding:12px;border-radius:12px;border:1px solid var(--glass)}
+    .nav{display:flex;flex-direction:column;gap:8px}
+    .nav button{background:transparent;border:0;padding:10px 12px;border-radius:8px;color:var(--muted);text-align:left;cursor:pointer}
+    .nav button.active{background:linear-gradient(90deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));color:var(--survey-2);box-shadow:inset 0 -2px 0 rgba(0,0,0,0.2)}
+    .balance{margin-top:12px;padding:10px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-radius:8px;font-weight:700;color:var(--survey-2)}
+    .content{position:relative;min-height:540px;padding:12px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);border:1px solid var(--glass)}
+    .section{position:absolute;inset:12px;padding:18px;border-radius:8px;opacity:0;transform:translateY(12px) scale(.99);pointer-events:none;transition:all 360ms cubic-bezier(.2,.9,.25,1)}
+    .section.visible{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}
+    .section h2{font-size:18px;margin-bottom:6px}.muted{color:var(--muted)}
+    .login-box{max-width:420px;margin:26px auto;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:16px;border-radius:10px;border:1px solid var(--glass)}
+    .input{width:100%;padding:12px;border-radius:8px;border:1px solid var(--glass-2);background:transparent;color:inherit}
+    .btn{padding:10px 12px;border-radius:8px;border:0;background:linear-gradient(90deg,var(--survey),var(--survey-2));color:#071017;font-weight:700;cursor:pointer}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+    .card{padding:12px;border-radius:8px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);border:1px solid var(--glass-2)}
+    .card h4{margin-bottom:8px}.price{font-weight:800;color:var(--marley)}
+    .inv-list{display:flex;flex-wrap:wrap;gap:10px}.inv-item{width:150px;padding:10px;border-radius:8px;background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.03);text-align:center}
+    .leaderboard{display:flex;flex-direction:column;gap:8px}.leader{display:flex;justify-content:space-between;padding:8px;border-radius:8px;background:rgba(255,255,255,0.02)}
+    footer{margin-top:12px;color:var(--muted);font-size:13px;text-align:center}
+    @media(max-width:900px){.main-grid{grid-template-columns:1fr}.sidebar{order:2}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="logo">W</div>
+      <div>
+        <h1>WALL ROSE</h1>
+        <p class="muted">Login, Menu, Profile, Inventory, Shop, Deck, Leaderboard</p>
+      </div>
+    </header>
+
+    <div class="main-grid">
+      <aside class="sidebar">
+        <nav class="nav" id="sidebarNav">
+          <button data-route="/login" class="nav-btn">Login</button>
+          <button data-route="/menu" class="nav-btn">Menu</button>
+          <button data-route="/profile" class="nav-btn">Profile</button>
+          <button data-route="/inventory" class="nav-btn">Inventory</button>
+          <button data-route="/shop" class="nav-btn">Shop</button>
+          <button data-route="/deck" class="nav-btn">Deck</button>
+          <button data-route="/leaderboard" class="nav-btn">Leaderboard</button>
+        </nav>
+
+        <div class="balance" id="sidebarBalance">Balance: 0 ⚔️</div>
+      </aside>
+
+      <main class="content">
+        <!-- LOGIN SECTION -->
+        <section id="/login" class="section visible">
+          <div class="login-box">
+            <h2>Create account</h2>
+            <p class="muted">Please Create a simple account (phone optional for now).</p>
+            <input id="displayNameInput" class="input" placeholder="Display name">
+            <div style="height:8px"></div>
+            <input id="displayPhoneInput" class="input" placeholder="Phone (optional)">
+            <div style="height:8px"></div>
+            <button id="createUserBtn" class="btn">Create Account</button>
+            <div style="height:10px"></div>
+            <div id="createUserMsg" class="muted"></div>
+          </div>
+        </section>
+
+        <!-- MENU SECTION -->
+        <section id="/menu" class="section">
+          <h2>Main Menu</h2>
+          <p class="muted">Quick links to your gameplay and bot features.</p>
+          <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn" onclick="navigate('/profile')">Profile</button>
+            <button class="btn" onclick="navigate('/inventory')">Inventory</button>
+            <button class="btn" onclick="navigate('/shop')">Shop</button>
+            <button class="btn" onclick="navigate('/deck')">Deck</button>
+            <button class="btn" onclick="navigate('/leaderboard')">Leaderboard</button>
+          </div>
+        </section>
+
+        <!-- PROFILE -->
+        <section id="/profile" class="section">
+          <h2>Your Profile</h2>
+          <div id="profileCard" class="card" style="margin-top:12px">
+            <p><strong id="pfName">—</strong></p>
+            <p class="muted">Phone: <span id="pfPhone">—</span></p>
+            <p class="muted">Level: <span id="pfLevel">1</span></p>
+            <p class="muted">XP: <span id="pfXp">0</span></p>
+            <p style="margin-top:8px;font-weight:800;color:var(--survey-2)">Balance: <span id="pfBal">0</span> ⚔️</p>
+          </div>
+        </section>
+
+        <!-- INVENTORY -->
+        <section id="/inventory" class="section">
+          <h2>Inventory</h2>
+          <div class="inv-list" id="invList" style="margin-top:12px"></div>
+        </section>
+
+        <!-- SHOP -->
+        <section id="/shop" class="section">
+          <h2>Shop</h2>
+          <p class="muted">Cards and items listed here will be published by users selling their claimed cards via the WhatsApp bot.</p>
+
+          <div style="margin-top:10px;display:flex;gap:8px">
+            <input id="newItemName" class="input" placeholder="Item name (demo)" style="width:auto;flex:1">
+            <input id="newItemPrice" class="input" placeholder="Price" style="width:120px">
+            <button id="addListing" class="btn">Add Listing</button>
+          </div>
+
+          <div class="grid" id="shopGrid" style="margin-top:12px"></div>
+        </section>
+
+        <!-- DECK -->
+        <section id="/deck" class="section">
+          <h2>Your Deck</h2>
+          <div id="deckList" style="margin-top:12px" class="grid"></div>
+        </section>
+
+        <!-- LEADERBOARD -->
+        <section id="/leaderboard" class="section">
+          <h2>Leaderboard</h2>
+          <div id="leaderboard" class="leaderboard" style="margin-top:12px"></div>
+        </section>
+
+      </main>
+    </div>
+
+    <footer>SPA demo — Backend blueprint included in repository. No WhatsApp integration yet.</footer>
+  </div>
+
+  <script>
+    // API base 
+    const API_BASE = (window.__API_BASE__ && window.__API_BASE__) || (location.protocol + '//' + location.hostname + ':3000');
+
+    // ------------------ Router ------------------
+    const sections = Array.from(document.querySelectorAll('.section'));
+    const navButtons = Array.from(document.querySelectorAll('.nav button'));
+    function showSection(route){ sections.forEach(s=>{ s.classList.toggle('visible', s.id === route); }); navButtons.forEach(b=>b.classList.toggle('active', b.dataset.route === route)); }
+    function navigate(route){ location.hash = route; }
+    window.addEventListener('hashchange', ()=>{ const r = location.hash.replace('#','') || '/login'; showSection(r); loadSectionData(r); });
+    navButtons.forEach(b=>b.addEventListener('click', ()=>{ navigate(b.dataset.route); }));
+    if(!location.hash) location.hash = '/login'; else showSection(location.hash.replace('#',''));
+
+    // ------------------ HTTP helpers ------------------
+    async function apiGet(path){ const res = await fetch(API_BASE + path); if(!res.ok) throw new Error('HTTP '+res.status); return res.json(); }
+    async function apiPost(path, body){ const res = await fetch(API_BASE + path, {method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)}); const data = await res.json().catch(()=>null); if(!res.ok) throw new Error(data && data.error ? data.error : 'HTTP '+res.status); return data; }
+
+    // ------------------ App State ------------------
+    let currentUser = null; // {id,name,phone,balance}
+
+    // ------------------ User actions ------------------
+    document.getElementById('createUserBtn').addEventListener('click', async ()=>{
+      const name = document.getElementById('displayNameInput').value.trim();
+      const phone = document.getElementById('displayPhoneInput').value.trim() || null;
+      if(!name){ document.getElementById('createUserMsg').textContent = 'Please enter a name'; return }
+      try{
+        const res = await apiPost('/api/user',{name,phone});
+        currentUser = res.user;
+        document.getElementById('createUserMsg').textContent = 'Account created: ' + currentUser.name;
+        updateUI();
+        navigate('/menu');
+      }catch(err){ document.getElementById('createUserMsg').textContent = 'Error: ' + err.message }
+    });
+
+    // ------------------ Loaders for sections ------------------
+    async function loadSectionData(route){
+      try{
+        if(route === '/shop') await loadShop();
+        if(route === '/inventory') await loadInventory();
+        if(route === '/profile') await loadProfile();
+        if(route === '/deck') await loadDeck();
+        if(route === '/leaderboard') await loadLeaderboard();
+      }catch(err){ console.error('load error',err); }
+    }
+
+    // ------------------ Shop ------------------
+    async function loadShop(){ const grid = document.getElementById('shopGrid'); grid.innerHTML = '<div class="muted">Loading...</div>'; try{ const data = await apiGet('/api/shop'); grid.innerHTML=''; if(!data.items || data.items.length===0) grid.innerHTML='<div class="muted">No listings.</div>'; else data.items.forEach(it=>{ const el = document.createElement('div'); el.className='card'; el.innerHTML = `<h4>${it.name}</h4><div class="muted">Seller:${it.seller}</div><div class="price">${it.price} ⚔️</div><div style="margin-top:8px"><button class="btn buyBtn" data-id="${it.id}">Buy</button></div>`; grid.appendChild(el); }); Array.from(document.querySelectorAll('.buyBtn')).forEach(b=>b.addEventListener('click', ()=>buyListing(b.dataset.id))); }catch(err){ grid.innerHTML='<div class="muted">Failed to load shop</div>'; }
+    }
+
+    document.getElementById('addListing').addEventListener('click', async ()=>{
+      const name = document.getElementById('newItemName').value.trim(); const price = parseInt(document.getElementById('newItemPrice').value,10);
+      if(!name || isNaN(price) || price<=0){ alert('Provide name and valid price'); return }
+      if(!currentUser){ alert('Create an account first'); return }
+      try{ await apiPost('/api/shop',{name,price,seller:currentUser.name}); document.getElementById('newItemName').value=''; document.getElementById('newItemPrice').value=''; await loadShop(); }catch(err){ alert('Add listing failed: '+err.message) }
+    });
+
+    async function buyListing(listingId){ if(!currentUser){ alert('Create an account first'); return } try{ const res = await apiPost('/api/buy',{userId: currentUser.id, listingId}); alert('Bought! New balance: ' + res.newBal); await loadInventory(); await loadShop(); await loadProfile(); }catch(err){ alert('Buy failed: ' + err.message) } }
+
+    // ------------------ Inventory ------------------
+    async function loadInventory(){ const invEl = document.getElementById('invList'); invEl.innerHTML = '<div class="muted">Loading...</div>'; if(!currentUser){ invEl.innerHTML = '<div class="muted">Create account to see inventory</div>'; return }
+      try{ const data = await apiGet('/api/inventory?userId='+encodeURIComponent(currentUser.id)); invEl.innerHTML=''; if(!data.items || data.items.length===0) invEl.innerHTML='<div class="muted">Inventory empty</div>'; else data.items.forEach(it=>{ const d = document.createElement('div'); d.className='inv-item'; d.innerHTML = `<strong>${it.item_name}</strong><div class="muted">InvID:${it.id}</div><div style="margin-top:8px"><button class="btn sellBtn" data-id="${it.id}">Sell</button></div>`; invEl.appendChild(d); }); Array.from(document.querySelectorAll('.sellBtn')).forEach(b=>b.addEventListener('click', ()=>sellInventory(b.dataset.id))); }catch(err){ invEl.innerHTML = '<div class="muted">Failed to load inventory</div>'; }
+    }
+
+    async function sellInventory(invId){ const price = parseInt(prompt('Enter selling price (coins):'),10); if(isNaN(price)||price<=0){ alert('Invalid price'); return } try{ await apiPost('/api/sell',{userId: currentUser.id, invId, price}); alert('Listed for sale'); await loadInventory(); await loadShop(); await loadProfile(); }catch(err){ alert('Sell failed: '+err.message) } }
+
+    // ------------------ Deck ------------------
+    async function loadDeck(){ const deckEl = document.getElementById('deckList'); deckEl.innerHTML = '<div class="muted">Loading...</div>'; if(!currentUser){ deckEl.innerHTML = '<div class="muted">Create account to build deck</div>'; return } try{ const data = await apiGet('/api/deck?userId='+encodeURIComponent(currentUser.id)); deckEl.innerHTML=''; if(!data.deck || data.deck.length===0) deckEl.innerHTML='<div class="muted">No cards in deck</div>'; else data.deck.forEach(c=>{ const cc = document.createElement('div'); cc.className='card'; cc.innerHTML = `<strong>${c.item_name}</strong><div class="muted">ID:${c.id}</div>`; deckEl.appendChild(cc); }); }catch(err){ deckEl.innerHTML = '<div class="muted">Failed to load deck</div>'; }
+    }
+
+    // ------------------ Profile ------------------
+    async function loadProfile(){ if(!currentUser) return; try{ const data = await apiGet('/api/user?userId='+encodeURIComponent(currentUser.id)); currentUser = data.user; updateUI(); }catch(err){ console.error('profile load failed',err); } }
+
+    // ------------------ Leaderboard ------------------
+    async function loadLeaderboard(){ const lb = document.getElementById('leaderboard'); lb.innerHTML = '<div class="muted">Loading...</div>'; try{ const data = await apiGet('/api/leaderboard'); lb.innerHTML=''; if(!data.top || data.top.length===0) lb.innerHTML = '<div class="muted">No players yet</div>'; else data.top.forEach((p,i)=>{ const d = document.createElement('div'); d.className='leader'; d.innerHTML = `<div>${i+1}. <strong>${p.name}</strong></div><div class="muted">${p.balance} ⚔️</div>`; lb.appendChild(d); }); }catch(err){ lb.innerHTML = '<div class="muted">Failed to load leaderboard</div>'; } }
+
+    // ------------------ Update UI ------------------
+    function updateUI(){ if(!currentUser) return; document.getElementById('pfName').textContent = currentUser.name; document.getElementById('pfPhone').textContent = currentUser.phone || '—'; document.getElementById('pfLevel').textContent = currentUser.level || 1; document.getElementById('pfXp').textContent = currentUser.xp || 0; document.getElementById('pfBal').textContent = currentUser.balance || 0; document.getElementById('sidebarBalance').textContent = 'Balance: ' + (currentUser.balance || 0) + ' ⚔️'; }
+
+    // ------------------ Init - quick ping backend ------------------
+    (async function init(){
+      try{
+        await apiGet('/api/shop'); // ping backend
+      }catch(e){
+        console.warn('Backend not reachable at', API_BASE);
+      }
+      // set route
+      loadSectionData(location.hash.replace('#','') || '/login');
+    })();
+  </script>
+</body>
+</html>
